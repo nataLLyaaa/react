@@ -1,31 +1,39 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import uuid from "react-uuid";
+import Users from "./Users";
+const initUser = [
+  { id: uuid(), name: "Иван", surname: "Иванов", age: "20", inban: false },
+  { id: uuid(), name: "Петр", surname: "Петров", age: "30", inban: false },
+  { id: uuid(), name: "Семен", surname: "Сидоров", age: "60", inban: false },
+];
 function App() {
-  const [visible, setVisible] = useState(false);
-
-  let elem1, elem2, elem3;
-  if (visible) {
-    elem1 = <p>text1 </p>;
-    elem2 = <p>text2 </p>;
-    elem3 = <p>text3 </p>;
+  const [users, setUsers] = useState(initUser);
+  function addToBan(id) {
+    setUsers(
+      users.map((user) => {
+        if (user.id === id) {
+          return { ...user, inban: !user.inban };
+        }
+        return user;
+      })
+    );
   }
 
+  const result = users.map((user) => {
+    return <Users {...user} key={user.id} addToBan={addToBan} />;
+  });
   return (
-    <div>
-      <button onClick={() => setVisible(!visible)}>
-        {visible ? "hide1" : "show1"}
-      </button>
-
-      <button onClick={() => setVisible(!visible)}>
-        {visible ? "hide2" : "show2"}
-      </button>
-
-      <button onClick={() => setVisible(!visible)}>
-        {visible ? "hide3" : "show3"}
-      </button>
-      {elem1}
-      {elem2}
-      {elem3}
-    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>id</th>
+          <th>name</th>
+          <th>surname</th>
+          <th>age</th>
+        </tr>
+      </thead>
+      <tbody>{result}</tbody>
+    </table>
   );
 }
 export default App;
